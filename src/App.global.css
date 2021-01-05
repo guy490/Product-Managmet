@@ -5,111 +5,105 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 body {
-  position: relative;
-  color: white;
-  height: 100vh;
-  background: linear-gradient(
-    200.96deg,
-    #418af8 -29.09%,
-    #94afe0 51.77%,
-    #2215db 129.35%
-  );
-  font-family: 'Noto Sans JP', sans-serif;
-  overflow-y: hidden;
-  display: flex;
-  justify-content: center;
+    position: relative;
+    color: white;
+    height: 100vh;
+    background: linear-gradient( 200.96deg, #418af8 -29.09%, #94afe0 51.77%, #2215db 129.35%);
+    font-family: 'Noto Sans JP', sans-serif;
+    overflow-y: hidden;
+    display: flex;
+    justify-content: center;
 }
 
 button {
-  background-color: white;
-  margin: 10px;
-  border-radius: 10px;
-  border: none;
-  appearance: none;
-  outline: none;
-  font-size: 1rem;
-  box-shadow: 0px 8px 28px -6px rgba(24, 39, 75, 0.12),
-    0px 18px 88px -4px rgba(24, 39, 75, 0.14);
-  transition: transform ease-in 0.1s;
-  cursor: pointer;
+    background-color: white;
+    margin: 10px;
+    border-radius: 10px;
+    border: none;
+    appearance: none;
+    outline: none;
+    font-size: 1rem;
+    box-shadow: 0px 8px 28px -6px rgba(24, 39, 75, 0.12), 0px 18px 88px -4px rgba(24, 39, 75, 0.14);
+    transition: transform ease-in 0.1s;
+    cursor: pointer;
 }
 
 button:hover {
-  transform: scale(1.1);
+    transform: scale(1.1);
 }
 
 p {
-  font-size: 24px;
+    font-size: 24px;
 }
 
 li {
-  list-style: none;
+    list-style: none;
 }
 
 .months-list {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-content: center;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
 }
 
 .year-list {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-content: flex-end;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-end;
 }
 
 .list-element {
-  text-align: center;
-  border: 1px solid rgb(212, 212, 230);
-  border-radius: 15px;
-  margin-top: 2px;
-  padding: 0.5rem;
-  cursor: pointer;
-  width: 100px;
+    text-align: center;
+    border: 1px solid rgb(212, 212, 230);
+    border-radius: 15px;
+    margin-top: 2px;
+    padding: 0.5rem;
+    cursor: pointer;
+    width: 100px;
 }
 
 .list-element:hover {
-  border: 1px solid rgb(86, 89, 238);
-  transition: 0.5s;
+    border: 1px solid rgb(86, 89, 238);
+    transition: 0.5s;
 }
 
 .lists-view {
-  display: grid;
-  grid-template-columns: 30vw 65vw;
-  grid-template-rows: 30vh;
-  width: 100%;
+    display: grid;
+    grid-template-columns: 30vw 65vw;
+    grid-template-rows: 30vh;
+    width: 100%;
 }
 
 .select-button,
 .item-managment {
-  text-align: center;
+    text-align: center;
 }
 
 .container {
-  position: relative;
+    position: relative;
 }
 
 .container span.month-text {
-  display: block;
-  z-index: 0;
+    display: block;
+    z-index: 0;
 }
 
 .container span.month-status {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 100;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 100;
 }
 
 .fa-check-circle {
-  color: greenyellow;
+    color: greenyellow;
 }
 
 .fa-spinner,
 .fa-hand-sparkles {
-  color: white;
+    color: white;
 }

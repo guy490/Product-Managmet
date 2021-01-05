@@ -2,8 +2,8 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import fs from 'fs';
 import DirectoryContext from '../Context';
+import createFolderList from '../utilities';
 import {
   Months,
   LAST_MONTH,
@@ -13,50 +13,39 @@ import {
 } from '../constants';
 
 const DateDetails = () => {
-  const { contextPath: folderPath } = useContext(DirectoryContext);
+  const { path } = useContext(DirectoryContext);
+  const { selectedYear, setSelectedYear } = useContext(DirectoryContext);
+  const { selectedMonth, setSelectedMonth } = useContext(DirectoryContext);
   const [years, setYears] = useState<string[]>([]);
   const [months, setMonths] = useState<{ month: string; status: string }[]>([]);
-  const [selectedYear, setSelectedYear] = useState<string>('');
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
   const monthUlRef = useRef<HTMLUListElement>(null);
   const yearUlRef = useRef<HTMLUListElement>(null);
-  const createFolderList = async (path: string) => {
-    const dir = await fs.promises.opendir(path);
-    const tmpArray: string[] = [];
-    // eslint-disable-next-line no-restricted-syntax
-    for await (const dirent of dir) {
-      if (dirent.isDirectory()) {
-        tmpArray.push(dirent.name);
-      }
-    }
-    return tmpArray;
-  };
-  useEffect(() => {
-    if (selectedYear) {
-      createFolderList(`${folderPath}/${selectedYear}`)
-        .then((res) =>
-          setMonths(
-            res.map((dir) => {
-              const dirName = dir;
-              const readableMonth = {
-                month: dirName.split(' - ')[0],
-                status: dirName.split(' - ')[1],
-              };
-              return readableMonth;
-            })
-          )
-        )
-        .catch(console.error);
-    }
-  }, [selectedYear, folderPath]);
 
   useEffect(() => {
-    if (folderPath) {
-      createFolderList(folderPath)
+    if (selectedYear) {
+      createFolderList(`${path}/${selectedYear}`)
+        .then((res) => {
+          const monthList = res.map((dir) => {
+            const dirName = dir;
+            const readableMonth = {
+              month: dirName.split(' - ')[0],
+              status: dirName.split(' - ')[1],
+            };
+            return readableMonth;
+          });
+          return setMonths(monthList);
+        })
+        .catch(console.error);
+    }
+  }, [selectedYear, path]);
+
+  useEffect(() => {
+    if (path) {
+      createFolderList(path)
         .then((res) => setYears(res))
         .catch(console.error);
     }
-  }, [folderPath]);
+  }, [path]);
 
   const markSelected = (
     ulRef: React.RefObject<HTMLUListElement>,
@@ -75,10 +64,12 @@ const DateDetails = () => {
 
   useEffect(() => {
     markSelected(yearUlRef, selectedYear);
-  }, [selectedYear]);
+  }, [selectedYear, setSelectedMonth]);
 
   useEffect(() => {
-    markSelected(monthUlRef, selectedMonth);
+    if (selectedMonth) {
+      markSelected(monthUlRef, selectedMonth.month);
+    }
   }, [selectedMonth]);
   const addNewYear = () => {
     const newYear: string = (
@@ -86,6 +77,11 @@ const DateDetails = () => {
     ).toString();
     setYears([...years, newYear]);
     return newYear;
+  };
+  const selectYear = (newYear: string) => {
+    setMonths([]);
+    setSelectedMonth(null);
+    setSelectedYear(newYear);
   };
   const createYearElement = (content: string, key?: string) => {
     const listKey = key === undefined ? content : key;
@@ -97,7 +93,7 @@ const DateDetails = () => {
           if (listKey === 'last') {
             addNewYear();
           } else {
-            setSelectedYear(content);
+            selectYear(content);
           }
         }}
       >
@@ -114,7 +110,8 @@ const DateDetails = () => {
     const lastListedMonth = Months.indexOf(months[months.length - 1].month);
     if (lastListedMonth === LAST_MONTH) {
       const newYear = addNewYear();
-      setSelectedYear(newYear);
+      setSelectedMonth(null);
+      selectYear(newYear);
       setMonths([{ month: Months[FIRST_MONTH], status: MONTH_STATUS.PROCESS }]);
     } else {
       const newMonth: { month: string; status: string } = {
@@ -130,10 +127,14 @@ const DateDetails = () => {
         key={content.month}
         className="list-element"
         onClick={() => {
-          if (content.status) {
+          console.log(
+            content.status === MONTH_STATUS.NEW_BUTTON,
+            MONTH_STATUS.NEW_BUTTON
+          );
+          if (content.status === MONTH_STATUS.NEW_BUTTON) {
             addNewMonth();
           } else {
-            setSelectedMonth(content.month);
+            setSelectedMonth(content);
           }
         }}
       >
@@ -159,12 +160,15 @@ const DateDetails = () => {
     <div className="lists-view">
       <ul className="year-list" ref={yearUlRef}>
         {createYearsList()}
-        {folderPath ? createYearElement('New Year', 'last') : ''}
+        {path ? createYearElement('New Year', 'last') : ''}
       </ul>
       <ul className="months-list" ref={monthUlRef}>
         {createMonthsList()}
         {selectedYear
-          ? createMonthElement({ month: 'New Month', status: 'NEW_BUTTON' })
+          ? createMonthElement({
+              month: 'New Month',
+              status: MONTH_STATUS.NEW_BUTTON,
+            })
           : ''}
       </ul>
     </div>

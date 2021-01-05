@@ -1,8 +1,9 @@
-import React, { MutableRefObject, useRef } from 'react';
+import React, { MutableRefObject, useRef, useContext } from 'react';
 import { ipcRenderer } from 'electron';
+import DirectoryContext from '../Context';
 
-const SelectButton = (props: { setPath: (newPath: string) => void }) => {
-  const { setPath } = props;
+const SelectButton = () => {
+  const { setPath } = useContext(DirectoryContext);
   const inputRef = useRef() as MutableRefObject<HTMLInputElement>;
   const openSelectFolderWindow = (e: { preventDefault: () => void }) => {
     e.preventDefault();
