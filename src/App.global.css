@@ -107,3 +107,19 @@ li {
 .fa-hand-sparkles {
     color: white;
 }
+
+.product-list-view {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+
+.products-table th,
+td {
+    border: 1px solid white;
+    width: 20vw;
+}
+
+a {
+    color: black
+}

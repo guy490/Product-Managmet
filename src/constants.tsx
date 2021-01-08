@@ -26,4 +26,11 @@ const ICONS: { [key:string]: string } = {
 };
 const LAST_MONTH = 11;
 const FIRST_MONTH = 0;
-export { Months, LAST_MONTH, FIRST_MONTH, MONTH_STATUS, ICONS };
+const statusOptions = [
+  'Reviewed - Done',
+  'Skipped',
+  'Submitted For Pay',
+  'Reviewed - Waiting For Pay',
+  'Cancelled',
+];
+export { Months, LAST_MONTH, FIRST_MONTH, MONTH_STATUS, ICONS, statusOptions };

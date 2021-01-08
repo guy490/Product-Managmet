@@ -80,7 +80,7 @@ const DateDetails = () => {
   };
   const selectYear = (newYear: string) => {
     setMonths([]);
-    setSelectedMonth(null);
+    setSelectedMonth({ month: '', status: '' });
     setSelectedYear(newYear);
   };
   const createYearElement = (content: string, key?: string) => {
@@ -110,7 +110,7 @@ const DateDetails = () => {
     const lastListedMonth = Months.indexOf(months[months.length - 1].month);
     if (lastListedMonth === LAST_MONTH) {
       const newYear = addNewYear();
-      setSelectedMonth(null);
+      setSelectedMonth({ month: '', status: '' });
       selectYear(newYear);
       setMonths([{ month: Months[FIRST_MONTH], status: MONTH_STATUS.PROCESS }]);
     } else {
@@ -127,10 +127,6 @@ const DateDetails = () => {
         key={content.month}
         className="list-element"
         onClick={() => {
-          console.log(
-            content.status === MONTH_STATUS.NEW_BUTTON,
-            MONTH_STATUS.NEW_BUTTON
-          );
           if (content.status === MONTH_STATUS.NEW_BUTTON) {
             addNewMonth();
           } else {

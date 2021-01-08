@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import ItemManagment from './Body/ItemManagment';
 import SelectButton from './Header/SelectButton';
 import DirectoryContext from './Context';
+import ProductView from './Body/ProductView';
 
 const Main = () => {
   return (
@@ -16,10 +17,10 @@ const Main = () => {
 export default function App() {
   const [path, setPath] = useState('');
   const [selectedYear, setSelectedYear] = useState<string>('');
-  const [selectedMonth, setSelectedMonth] = useState<{
-    month: string;
-    status: string;
-  }>({ month: '', status: '' });
+  const [selectedMonth, setSelectedMonth] = useState({
+    month: '',
+    status: '',
+  });
 
   const pathData = {
     path,
@@ -43,6 +44,7 @@ export default function App() {
     >
       <Router>
         <Switch>
+          <Route path="/ProductView/:productNum" component={ProductView} />
           <Route path="/" component={Main} />
         </Switch>
       </Router>

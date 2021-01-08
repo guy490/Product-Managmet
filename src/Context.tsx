@@ -9,9 +9,9 @@ const DirectoryContext = createContext({
   setSelectedYear: (newYear: string) => {
     newYear.toString();
   },
-  selectedMonth: { month: '', status: '' } || null,
-  setSelectedMonth: (newMonth: { month: string; status: string } | null) => {
-    newMonth?.toString();
+  selectedMonth: { month: '', status: '' },
+  setSelectedMonth: (newMonth: { month: string; status: string }) => {
+    newMonth.toString();
   },
 });
 
