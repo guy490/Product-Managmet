@@ -1,31 +1,38 @@
+/* eslint-disable no-console */
 import React, { useContext, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import createFolderList from '../utilities';
+import {
+  checkMonthStatus,
+  createFolderList,
+  createMonthsList,
+  renameStatus,
+} from '../utilities';
 import { statusOptions } from '../constants';
-import DirectoryContext from '../Context';
+import { DirectoryContext, MonthListContext } from '../Context';
 
 const ProductsListView = () => {
-  const { path, selectedMonth, selectedYear } = useContext(DirectoryContext);
+  const { path, setSelectedMonth, selectedMonth, selectedYear } = useContext(
+    DirectoryContext
+  );
+  const { setMonths } = useContext(MonthListContext);
   const [productList, setProductList] = useState<
     { num: string; status: string }[]
   >([]);
-  const [selectedProduct, setSelectedProduct] = useState<string>();
+  const productsPath = `${path}/${selectedYear}/${selectedMonth.month} - ${selectedMonth.status}`;
   const createProductList = useCallback(() => {
-    const productsPath = `${path}/${selectedYear}/${selectedMonth.month} - ${selectedMonth.status}`;
-    createFolderList(productsPath)
-      .then((res) => {
-        const productObjectsList = res.map((dir) => {
-          const dirName = dir;
-          const readableProduct = {
-            num: dirName.split(' - ')[0],
-            status: dirName.split(' - ')[1],
-          };
-          return readableProduct;
-        });
-        return setProductList(productObjectsList);
-      })
-      .catch((err) => console.error(err));
-  }, [selectedYear, selectedMonth, path]);
+    const res = createFolderList(productsPath);
+    const productObjectsList = res.map((dir) => {
+      const splittedDirName = dir.split(' - ');
+      const productNum = splittedDirName[0];
+      const statusDetails = splittedDirName.slice(1).join(' - ');
+      const readableProduct = {
+        num: productNum,
+        status: statusDetails,
+      };
+      return readableProduct;
+    });
+    setProductList(productObjectsList);
+  }, [productsPath]);
 
   const createStatusOptions = () => {
     return statusOptions.map((status) => (
@@ -58,14 +65,30 @@ const ProductsListView = () => {
           <td>{product.num}</td>
           <td>
             <select
-              onChange={(e) => setProductStatus(product.num, e.target.value)}
+              onChange={(e) => {
+                const oldProductStatus = `${productsPath}/${product.num} - ${product.status}`;
+                const newProductStatus = `${productsPath}/${product.num} - ${e.target.value}`;
+                renameStatus(oldProductStatus, newProductStatus);
+                const newMonthStatus = checkMonthStatus(
+                  `${path}/${selectedYear}`,
+                  selectedMonth.month,
+                  selectedMonth.status
+                );
+                setSelectedMonth({ ...selectedMonth, status: newMonthStatus });
+                const monthList = createMonthsList(`${path}/${selectedYear}`);
+                setMonths(monthList);
+
+                setProductStatus(product.num, e.target.value);
+              }}
               value={product.status}
             >
               {createStatusOptions()}
             </select>
           </td>
           <td>
-            <Link to={`/ProductView/${product.num}`}>Click Here</Link>
+            <Link to={`/ProductView/${product.num}&${product.status}`}>
+              Click Here
+            </Link>
           </td>
         </tr>
       );

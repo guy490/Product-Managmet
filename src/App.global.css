@@ -123,3 +123,45 @@ td {
 a {
     color: black
 }
+
+.table-view {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+}
+
+.files-table {
+    display: flex;
+    justify-content: center;
+    width: 30%;
+    margin: 0 2% 0 2%;
+}
+
+.files-table table {
+    border: 1px solid white;
+    text-align: center;
+}
+
+.files-table td {
+    border: 1px solid white;
+    max-width: 20vw;
+}
+
+.product-view {
+    text-align: center;
+}
+
+caption {
+    color: #ffffff;
+    border: 1px solid white
+}
+
+.img-preview {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.delete {
+    color: red;
+    cursor: pointer;
+}

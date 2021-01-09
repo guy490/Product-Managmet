@@ -1,6 +1,6 @@
 import React, { MutableRefObject, useRef, useContext } from 'react';
 import { ipcRenderer } from 'electron';
-import DirectoryContext from '../Context';
+import { DirectoryContext } from '../Context';
 
 const SelectButton = () => {
   const { setPath } = useContext(DirectoryContext);

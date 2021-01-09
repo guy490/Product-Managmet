@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import ItemManagment from './Body/ItemManagment';
 import SelectButton from './Header/SelectButton';
-import DirectoryContext from './Context';
+import { DirectoryContext } from './Context';
 import ProductView from './Body/ProductView';
 
 const Main = () => {
@@ -44,7 +44,10 @@ export default function App() {
     >
       <Router>
         <Switch>
-          <Route path="/ProductView/:productNum" component={ProductView} />
+          <Route
+            path="/ProductView/:productNum&:productStatus"
+            component={ProductView}
+          />
           <Route path="/" component={Main} />
         </Switch>
       </Router>

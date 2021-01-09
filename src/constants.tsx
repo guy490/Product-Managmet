@@ -26,11 +26,26 @@ const ICONS: { [key:string]: string } = {
 };
 const LAST_MONTH = 11;
 const FIRST_MONTH = 0;
+const statusConstants = {
+  DONE: 'Reviewed - Done',
+  SKIPPED: 'Skipped',
+  SUBMITTED: 'Submitted',
+  WAITING: 'Reviewed - Waiting For Payment',
+  CANCELLED: 'Cancelled',
+};
 const statusOptions = [
-  'Reviewed - Done',
-  'Skipped',
-  'Submitted For Pay',
-  'Reviewed - Waiting For Pay',
-  'Cancelled',
+  statusConstants.DONE,
+  statusConstants.SKIPPED,
+  statusConstants.SUBMITTED,
+  statusConstants.WAITING,
+  statusConstants.CANCELLED,
 ];
-export { Months, LAST_MONTH, FIRST_MONTH, MONTH_STATUS, ICONS, statusOptions };
+export {
+  Months,
+  LAST_MONTH,
+  FIRST_MONTH,
+  MONTH_STATUS,
+  ICONS,
+  statusOptions,
+  statusConstants,
+};

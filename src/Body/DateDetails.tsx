@@ -2,8 +2,9 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import DirectoryContext from '../Context';
-import createFolderList from '../utilities';
+import { createFolderList, createMonthsList } from '../utilities';
+import { DirectoryContext, MonthListContext } from '../Context';
+
 import {
   Months,
   LAST_MONTH,
@@ -16,34 +17,22 @@ const DateDetails = () => {
   const { path } = useContext(DirectoryContext);
   const { selectedYear, setSelectedYear } = useContext(DirectoryContext);
   const { selectedMonth, setSelectedMonth } = useContext(DirectoryContext);
+  const { months, setMonths } = useContext(MonthListContext);
   const [years, setYears] = useState<string[]>([]);
-  const [months, setMonths] = useState<{ month: string; status: string }[]>([]);
   const monthUlRef = useRef<HTMLUListElement>(null);
   const yearUlRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     if (selectedYear) {
-      createFolderList(`${path}/${selectedYear}`)
-        .then((res) => {
-          const monthList = res.map((dir) => {
-            const dirName = dir;
-            const readableMonth = {
-              month: dirName.split(' - ')[0],
-              status: dirName.split(' - ')[1],
-            };
-            return readableMonth;
-          });
-          return setMonths(monthList);
-        })
-        .catch(console.error);
+      const monthList = createMonthsList(`${path}/${selectedYear}`);
+      setMonths(monthList);
     }
-  }, [selectedYear, path]);
+  }, [selectedYear, path, setMonths]);
 
   useEffect(() => {
     if (path) {
-      createFolderList(path)
-        .then((res) => setYears(res))
-        .catch(console.error);
+      const res = createFolderList(path);
+      setYears(res);
     }
   }, [path]);
 
@@ -146,7 +135,7 @@ const DateDetails = () => {
       </li>
     );
   };
-  const createMonthsList = () => {
+  const createMonthsElementList = () => {
     months.sort((a, b) => {
       return Months.indexOf(a.month) - Months.indexOf(b.month);
     });
@@ -159,7 +148,7 @@ const DateDetails = () => {
         {path ? createYearElement('New Year', 'last') : ''}
       </ul>
       <ul className="months-list" ref={monthUlRef}>
-        {createMonthsList()}
+        {createMonthsElementList()}
         {selectedYear
           ? createMonthElement({
               month: 'New Month',

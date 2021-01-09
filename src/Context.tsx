@@ -15,4 +15,10 @@ const DirectoryContext = createContext({
   },
 });
 
-export default DirectoryContext;
+const MonthListContext = createContext({
+  months: [{ month: '', status: '' }],
+  setMonths: (newMonthsList: { month: string; status: string }[]) => {
+    newMonthsList.toString();
+  },
+});
+export { DirectoryContext, MonthListContext };
