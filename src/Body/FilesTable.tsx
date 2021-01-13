@@ -1,12 +1,13 @@
+import { ipcRenderer } from 'electron';
 import React, { useState, useEffect } from 'react';
-import { createFolderList } from '../utilities';
+import { addFileToProduct, createFileList } from '../utilities';
 
 const FilesTable = (props: { title: string; path: string }) => {
   const { title, path } = props;
   const fullPath = `${path}/${title}`;
   const [files, setFiles] = useState<string[]>(['']);
   useEffect(() => {
-    const fileList = createFolderList(fullPath);
+    const fileList = createFileList(fullPath);
     setFiles(fileList);
   }, [path, title, setFiles, fullPath]);
 
@@ -15,9 +16,11 @@ const FilesTable = (props: { title: string; path: string }) => {
       <tr key={`${file}`}>
         <td className="link">
           <div>
-            <a href={`${fullPath}/${file}`} target="_blank" rel="noreferrer">
-              Open
-            </a>
+            <button type="button">
+              <a href={`${fullPath}/${file}`} target="_blank" rel="noreferrer">
+                Open
+              </a>
+            </button>
           </div>
           {file.toLowerCase().endsWith('pdf') ? (
             'PDF FILE'
@@ -35,6 +38,25 @@ const FilesTable = (props: { title: string; path: string }) => {
       </tr>
     ));
   };
+
+  const addFile = () => {
+    ipcRenderer
+      .invoke('add-file')
+      .then((seletedFile) => {
+        const splittedPath = seletedFile.split('\\');
+        const fileName = splittedPath[splittedPath.length - 1];
+        addFileToProduct(seletedFile, `${fullPath}/${fileName}`);
+        setFiles([...files, fileName]);
+        return seletedFile;
+      })
+
+      // eslint-disable-next-line no-alert
+      .catch((err) => alert(`${err.message} - please change the file name`));
+  };
+
+  const openFolder = () => {
+    ipcRenderer.invoke('open-folder', fullPath);
+  };
   return (
     <div className="files-table">
       <table>
@@ -42,13 +64,20 @@ const FilesTable = (props: { title: string; path: string }) => {
         <thead>
           <tr>
             <th>File</th>
-            <th>Replace</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {createTableData()}
           <tr>
-            <td colSpan={2}>Add New Row</td>
+            <td colSpan={2}>
+              <button type="button" onClick={() => addFile()}>
+                Add File
+              </button>
+              <button type="button" onClick={() => openFolder()}>
+                Containing Folder
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>

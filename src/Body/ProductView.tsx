@@ -1,7 +1,18 @@
-import React, { useContext, useState, useEffect, useCallback } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { Link } from 'react-router-dom';
-import { createFolderList, getProductPath } from '../utilities';
-import DirectoryContext from '../Context';
+import {
+  createFolderList,
+  getNotesContent,
+  getProductPath,
+  setNotesContent,
+} from '../utilities';
+import { DirectoryContext } from '../Context';
 import FilesTable from './FilesTable';
 
 const ProductView = (props: {
@@ -14,33 +25,45 @@ const ProductView = (props: {
   } = props;
   const { path, selectedMonth, selectedYear } = useContext(DirectoryContext);
   const [productFolderList, setProductFolderList] = useState<string[]>(['']);
+  const [productNotes, setProductNotes] = useState<string>('');
+  const productObj = useMemo(() => {
+    return { num: productNum, status: productStatus };
+  }, [productNum, productStatus]);
+
+  const productPath = getProductPath(
+    path,
+    selectedYear,
+    selectedMonth,
+    productObj
+  );
+
   const createProductFoldersList = useCallback(async () => {
-    const productObj = { num: productNum, status: productStatus };
-    const folderList = createFolderList(
-      getProductPath(path, selectedYear, selectedMonth, productObj)
-    )
-      .then((res) => res)
-      .catch((err) => err);
-    setProductFolderList(await folderList);
-  }, [productNum, productStatus, path, selectedYear, selectedMonth]);
+    const folderList = createFolderList(productPath);
+    setProductFolderList(folderList);
+  }, [productPath]);
   useEffect(() => {
     createProductFoldersList();
   }, [createProductFoldersList]);
 
+  useEffect(() => {
+    const data = getNotesContent(
+      getProductPath(path, selectedYear, selectedMonth, productObj)
+    );
+
+    setProductNotes(data);
+  }, [path, productObj, selectedMonth, selectedYear]);
+
+  const updateNotesFile = () => {
+    setNotesContent(productPath, productNotes);
+  };
   const createTables = (folderList: string[]) => {
-    const productObj = { num: productNum, status: productStatus };
-    const productPath = `${getProductPath(
-      path,
-      selectedYear,
-      selectedMonth,
-      productObj
-    )}`;
     return folderList.map((folder: string) => {
       return (
         <FilesTable key={`${folder}`} title={`${folder}`} path={productPath} />
       );
     });
   };
+
   return (
     <div className="product-view">
       <button type="button">
@@ -50,6 +73,18 @@ const ProductView = (props: {
         Product {productNum} - {productStatus}
       </h3>
       <div className="table-view">{createTables(productFolderList)}</div>
+      <div className="notes">
+        <textarea
+          className="info"
+          value={productNotes}
+          onChange={(e) => setProductNotes(e.target.value)}
+        />
+        <div>
+          <button type="button" onClick={() => updateNotesFile()}>
+            Save Notes
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

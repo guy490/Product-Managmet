@@ -11,7 +11,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 
@@ -103,6 +103,19 @@ const createWindow = async () => {
       return result.filePaths[0];
     }
     return '';
+  });
+
+  ipcMain.handle('add-file', async () => {
+    if (mainWindow) {
+      const result = await dialog.showOpenDialog(mainWindow, {
+        properties: ['openFile'],
+      });
+      return result.filePaths[0];
+    }
+    return '';
+  });
+  ipcMain.handle('open-folder', (_event, folderPath: string) => {
+    shell.openPath(folderPath);
   });
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line

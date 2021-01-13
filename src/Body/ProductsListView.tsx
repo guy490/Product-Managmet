@@ -86,9 +86,11 @@ const ProductsListView = () => {
             </select>
           </td>
           <td>
-            <Link to={`/ProductView/${product.num}&${product.status}`}>
-              Click Here
-            </Link>
+            <button type="button">
+              <Link to={`/ProductView/${product.num}&${product.status}`}>
+                Click Here
+              </Link>
+            </button>
           </td>
         </tr>
       );

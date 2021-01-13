@@ -2,9 +2,25 @@
 import fs from 'fs';
 import { MONTH_STATUS, statusConstants } from './constants';
 
+const { COPYFILE_EXCL } = fs.constants;
+
 const createFolderList = (dirPath: string) => {
+  const folderList: string[] = [];
+  fs.readdirSync(dirPath).forEach((file) => {
+    if (fs.lstatSync(`${dirPath}/${file}`).isDirectory()) {
+      folderList.push(file);
+    }
+  });
+  return folderList;
+};
+
+const createFileList = (dirPath: string) => {
   const fileList: string[] = [];
-  fs.readdirSync(dirPath).forEach((file) => fileList.push(file));
+  fs.readdirSync(dirPath).forEach((file) => {
+    if (fs.lstatSync(`${dirPath}/${file}`).isFile()) {
+      fileList.push(file);
+    }
+  });
   return fileList;
 };
 const createMonthsList = (path: string) => {
@@ -60,10 +76,37 @@ const checkMonthStatus = (path: string, month: string, monthStatus: string) => {
   return MONTH_STATUS.PROCESS;
 };
 
+const getNotesContent = (productPath: string) => {
+  try {
+    return fs.readFileSync(`${productPath}/info.txt`, {
+      encoding: 'utf8',
+    });
+  } catch {
+    return '';
+  }
+};
+
+const setNotesContent = (productPath: string, data: string) => {
+  fs.writeFileSync(`${productPath}/info.txt`, data, {
+    encoding: 'utf8',
+    flag: 'w',
+  });
+};
+
+const addFileToProduct = (
+  sourceFileToCopy: string,
+  pathDistionation: string
+) => {
+  fs.copyFileSync(sourceFileToCopy, pathDistionation, COPYFILE_EXCL);
+};
 export {
   createFolderList,
+  createFileList,
   getProductPath,
   renameStatus,
   checkMonthStatus,
   createMonthsList,
+  getNotesContent,
+  setNotesContent,
+  addFileToProduct,
 };

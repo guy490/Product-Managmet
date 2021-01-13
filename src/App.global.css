@@ -10,7 +10,8 @@ body {
     height: 100vh;
     background: linear-gradient( 200.96deg, #418af8 -29.09%, #94afe0 51.77%, #2215db 129.35%);
     font-family: 'Noto Sans JP', sans-serif;
-    overflow-y: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     justify-content: center;
 }
@@ -121,7 +122,8 @@ td {
 }
 
 a {
-    color: black
+    color: black;
+    text-decoration: none;
 }
 
 .table-view {
@@ -142,8 +144,12 @@ a {
     text-align: center;
 }
 
-.files-table td {
+.files-table th,
+td {
     border: 1px solid white;
+}
+
+.files-table td {
     max-width: 20vw;
 }
 
@@ -164,4 +170,16 @@ caption {
 .delete {
     color: red;
     cursor: pointer;
+}
+
+.notes {
+    display: block;
+    margin-top: 1%;
+}
+
+textarea.info {
+    width: 50%;
+    height: 20vh;
+    overflow-y: scroll;
+    resize: vertical;
 }
