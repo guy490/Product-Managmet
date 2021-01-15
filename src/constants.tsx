@@ -13,6 +13,7 @@ const Months = [
   'Dec',
 ];
 const MONTH_STATUS = {
+  NEW: 'New',
   DONE: 'Done',
   PROCESS: 'On Process',
   NEW_BUTTON: 'NEW BUTTON',
@@ -26,7 +27,8 @@ const ICONS: { [key:string]: string } = {
 };
 const LAST_MONTH = 11;
 const FIRST_MONTH = 0;
-const statusConstants = {
+const productStatuses = {
+  NEW: 'New',
   DONE: 'Reviewed - Done',
   SKIPPED: 'Skipped',
   SUBMITTED: 'Submitted',
@@ -34,11 +36,12 @@ const statusConstants = {
   CANCELLED: 'Cancelled',
 };
 const statusOptions = [
-  statusConstants.DONE,
-  statusConstants.SKIPPED,
-  statusConstants.SUBMITTED,
-  statusConstants.WAITING,
-  statusConstants.CANCELLED,
+  productStatuses.NEW,
+  productStatuses.DONE,
+  productStatuses.SKIPPED,
+  productStatuses.SUBMITTED,
+  productStatuses.WAITING,
+  productStatuses.CANCELLED,
 ];
 export {
   Months,
@@ -47,5 +50,5 @@ export {
   MONTH_STATUS,
   ICONS,
   statusOptions,
-  statusConstants,
+  productStatuses,
 };

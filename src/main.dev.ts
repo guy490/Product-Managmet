@@ -117,6 +117,14 @@ const createWindow = async () => {
   ipcMain.handle('open-folder', (_event, folderPath: string) => {
     shell.openPath(folderPath);
   });
+  ipcMain.handle('delete-confirmation', async (_event, name: string) => {
+    const options = {
+      buttons: ['Yes', 'No'],
+      message: `Do you really want to delete ${name}?`,
+    };
+    const response = dialog.showMessageBox(options);
+    return (await response).response;
+  });
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
   new AppUpdater();

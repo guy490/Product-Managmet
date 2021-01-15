@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { createFolderList, createMonthsList } from '../utilities';
+import { createFolder, createFolderList, createMonthsList } from '../utilities';
 import { DirectoryContext, MonthListContext } from '../Context';
 
 import {
@@ -24,7 +24,7 @@ const DateDetails = () => {
 
   useEffect(() => {
     if (selectedYear) {
-      const monthList = createMonthsList(`${path}/${selectedYear}`);
+      const monthList = createMonthsList(`${path}\\${selectedYear}`);
       setMonths(monthList);
     }
   }, [selectedYear, path, setMonths]);
@@ -65,6 +65,7 @@ const DateDetails = () => {
       parseInt(years[years.length - 1], 10) + 1
     ).toString();
     setYears([...years, newYear]);
+    createFolder(`${path}\\${newYear}`);
     return newYear;
   };
   const selectYear = (newYear: string) => {
@@ -101,13 +102,18 @@ const DateDetails = () => {
       const newYear = addNewYear();
       setSelectedMonth({ month: '', status: '' });
       selectYear(newYear);
-      setMonths([{ month: Months[FIRST_MONTH], status: MONTH_STATUS.PROCESS }]);
+      setMonths([{ month: Months[FIRST_MONTH], status: MONTH_STATUS.NEW }]);
+      createFolder(
+        `${path}\\${newYear}\\${Months[FIRST_MONTH]} - ${MONTH_STATUS.NEW}`
+      );
     } else {
       const newMonth: { month: string; status: string } = {
         month: Months[lastListedMonth + 1],
-        status: MONTH_STATUS.PROCESS,
+        status: MONTH_STATUS.NEW,
       };
       setMonths([...months, newMonth]);
+      const yearPath = `${path}\\${selectedYear}`;
+      createFolder(`${yearPath}\\${newMonth.month} - ${MONTH_STATUS.NEW}`);
     }
   };
   const createMonthElement = (content: { month: string; status: string }) => {

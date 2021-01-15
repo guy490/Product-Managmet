@@ -3,7 +3,7 @@ import { ipcRenderer } from 'electron';
 import { DirectoryContext } from '../Context';
 
 const SelectButton = () => {
-  const { setPath } = useContext(DirectoryContext);
+  const { path, setPath } = useContext(DirectoryContext);
   const inputRef = useRef() as MutableRefObject<HTMLInputElement>;
   const openSelectFolderWindow = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -24,7 +24,7 @@ const SelectButton = () => {
       <button type="button" onClick={openSelectFolderWindow}>
         Select Path
       </button>
-      <input type="text" ref={inputRef} disabled />
+      <input type="text" ref={inputRef} value={path} disabled />
     </div>
   );
 };

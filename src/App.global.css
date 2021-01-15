@@ -7,13 +7,14 @@
 body {
     position: relative;
     color: white;
-    height: 100vh;
-    background: linear-gradient( 200.96deg, #418af8 -29.09%, #94afe0 51.77%, #2215db 129.35%);
+    margin: 0;
+    padding: 0;
     font-family: 'Noto Sans JP', sans-serif;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     justify-content: center;
+    background: linear-gradient( 200.96deg, #418af8 -29.09%, #94afe0 51.77%, #2215db 129.35%) no-repeat center center fixed;
 }
 
 button {
@@ -31,6 +32,14 @@ button {
 
 button:hover {
     transform: scale(1.1);
+}
+
+button.delete-product {
+    background-color: transparent;
+    color: red;
+    margin: 0;
+    border-radius: 0;
+    cursor: pointer;
 }
 
 p {
@@ -121,6 +130,10 @@ td {
     width: 20vw;
 }
 
+.delete-column {
+    width: 16px !important;
+}
+
 a {
     color: black;
     text-decoration: none;
@@ -154,6 +167,7 @@ td {
 }
 
 .product-view {
+    height: 100%;
     text-align: center;
 }
 
@@ -173,7 +187,6 @@ caption {
 }
 
 .notes {
-    display: block;
     margin-top: 1%;
 }
 

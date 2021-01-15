@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 import fs from 'fs';
-import { MONTH_STATUS, statusConstants } from './constants';
+import { MONTH_STATUS, productStatuses } from './constants';
 
 const { COPYFILE_EXCL } = fs.constants;
 
 const createFolderList = (dirPath: string) => {
   const folderList: string[] = [];
   fs.readdirSync(dirPath).forEach((file) => {
-    if (fs.lstatSync(`${dirPath}/${file}`).isDirectory()) {
+    if (fs.lstatSync(`${dirPath}\\${file}`).isDirectory()) {
       folderList.push(file);
     }
   });
@@ -17,7 +17,7 @@ const createFolderList = (dirPath: string) => {
 const createFileList = (dirPath: string) => {
   const fileList: string[] = [];
   fs.readdirSync(dirPath).forEach((file) => {
-    if (fs.lstatSync(`${dirPath}/${file}`).isFile()) {
+    if (fs.lstatSync(`${dirPath}\\${file}`).isFile()) {
       fileList.push(file);
     }
   });
@@ -44,7 +44,7 @@ const getProductPath = (
 ) => {
   const monthPath = `${selectedMonth.month} - ${selectedMonth.status}`;
   const productPath = `${product.num} - ${product.status}`;
-  return `${path}/${selectedYear}/${monthPath}/${productPath}`;
+  return `${path}\\${selectedYear}\\${monthPath}\\${productPath}`;
 };
 const renameStatus = (path: string, newPath: string) => {
   try {
@@ -53,32 +53,39 @@ const renameStatus = (path: string, newPath: string) => {
     console.log(err);
   }
 };
-const checkMonthStatus = (path: string, month: string, monthStatus: string) => {
-  const currentPath = `${path}/${month} - ${monthStatus}`;
+const checkMonthStatus = (
+  path: string,
+  month: string,
+  currentMonthStatus: string
+) => {
+  const currentPath = `${path}\\${month} - ${currentMonthStatus}`;
   const folderList = createFolderList(currentPath);
+  let newMonthStatus = '';
   let monthShouldUpdate = true;
   folderList.forEach((folder) => {
     if (
-      !folder.endsWith(statusConstants.DONE) &&
-      !folder.endsWith(statusConstants.SKIPPED) &&
-      !folder.endsWith(statusConstants.CANCELLED)
+      !folder.endsWith(productStatuses.DONE) &&
+      !folder.endsWith(productStatuses.SKIPPED) &&
+      !folder.endsWith(productStatuses.CANCELLED)
     ) {
       monthShouldUpdate = false;
     }
   });
   if (monthShouldUpdate) {
-    const newPath = `${path}/${month} - ${MONTH_STATUS.DONE}`;
-    renameStatus(currentPath, newPath);
-    return MONTH_STATUS.DONE;
+    newMonthStatus = MONTH_STATUS.DONE;
+  } else {
+    newMonthStatus = MONTH_STATUS.PROCESS;
   }
-  const newPath = `${path}/${month} - ${MONTH_STATUS.PROCESS}`;
-  renameStatus(currentPath, newPath);
-  return MONTH_STATUS.PROCESS;
+  const newPath = `${path}\\${month} - ${newMonthStatus}`;
+  if (currentPath !== newPath) {
+    renameStatus(currentPath, newPath);
+  }
+  return newMonthStatus;
 };
 
 const getNotesContent = (productPath: string) => {
   try {
-    return fs.readFileSync(`${productPath}/info.txt`, {
+    return fs.readFileSync(`${productPath}\\info.txt`, {
       encoding: 'utf8',
     });
   } catch {
@@ -87,7 +94,7 @@ const getNotesContent = (productPath: string) => {
 };
 
 const setNotesContent = (productPath: string, data: string) => {
-  fs.writeFileSync(`${productPath}/info.txt`, data, {
+  fs.writeFileSync(`${productPath}\\info.txt`, data, {
     encoding: 'utf8',
     flag: 'w',
   });
@@ -99,6 +106,18 @@ const addFileToProduct = (
 ) => {
   fs.copyFileSync(sourceFileToCopy, pathDistionation, COPYFILE_EXCL);
 };
+
+const createFolder = (folderPath: string) => {
+  fs.mkdirSync(folderPath);
+};
+
+const deleteFolder = (folderPath: string) => {
+  fs.rmdirSync(folderPath, { recursive: true });
+};
+
+const deleteFile = (filePath: string) => {
+  fs.unlinkSync(filePath);
+};
 export {
   createFolderList,
   createFileList,
@@ -109,4 +128,7 @@ export {
   getNotesContent,
   setNotesContent,
   addFileToProduct,
+  createFolder,
+  deleteFolder,
+  deleteFile,
 };
